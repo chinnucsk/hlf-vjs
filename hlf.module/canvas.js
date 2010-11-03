@@ -198,12 +198,16 @@ module.Canvas = util.BaseClass(util.extend({
      * Sets up an animation. Animation API.
      * @param {?Object=} opt Parameters.
      * @param {function} cb Frame callback.
-     * @param {?number=} idx Id of animation and timer. Always should be same.
+     * @param {?int=} duration Default is infinite.
+     * @param {?int=} idx Id of animation and timer. Always should be same.
      * @return {number} The id.
      */
-    animate: function (opt, cb, idx) {
+    animate: function (opt, cb, duration, idx) {
         opt = opt || {'fps': 24};
         var anim = {'opt': opt, 'cb': cb};
+        if (duration) {
+            anim.duration = duration;
+        }
         this._startAnimation(anim, idx);
         if (!idx) {
             this._animations.push(anim);
@@ -214,18 +218,35 @@ module.Canvas = util.BaseClass(util.extend({
      * Resets a timer, updates the index slot, and sets state to playing.
      * @param {!Object} anim Animation.
      * @param {?number=} idx Id of animation.
+     * @param {?int=} duration Default is infinite.
      * @requires hlf.util.millisPerFrame
      */
     _startAnimation: function (anim, idx) {
         var _this = this;
         idx = idx || this._animationTimers.length;
-        if (this._animationTimers[idx]) {
+        if (this._animationTimers[idx]) { // reset
             clearInterval(this._animationTimers[idx]);
         }
-        this._animationTimers[idx] = setInterval(function () {
-            _this.clear();
-            anim.cb();
-        }, util.millisPerFrame(anim.opt.fps));
+        if (anim.duration) {
+            var start = this.millis(), 
+                elapsed = 0,
+                complete = false;
+            this._animationTimers[idx] = setInterval(function () {
+                elapsed = _this.millis() - start;
+                if (elapsed >= anim.duration) {
+                    complete = true;
+                } else {
+                    _this.clear();                
+                    console.log('frame');
+                }
+                anim.cb(elapsed, complete);
+            }, util.millisPerFrame(anim.opt.fps));  
+        } else {
+            this._animationTimers[idx] = setInterval(function () {
+                _this.clear();
+                anim.cb();
+            }, util.millisPerFrame(anim.opt.fps));  
+        }
         this.animationState = module.Canvas.AnimationState.PLAYING;
     },
     /** 
@@ -322,6 +343,13 @@ module.Canvas = util.BaseClass(util.extend({
     clear: function () {
         this.context.clearRect(0, 0, this.getWidth(), this.getHeight());
     },
+    /**
+     * Simple way to get current time signature.
+     * @return {int}
+     */
+    millis: function () {
+        return new Date().getTime();
+    },
     // ----------------------------------------
     // MISC
     // ----------------------------------------
@@ -358,11 +386,11 @@ util.CanvasEventMixin = {
     bindMouse: function () {
         var _this = this;
         this.$canvas.bind({
-            mousemove: function (evt) { _this.onMouseMove(evt); },
-            mousedown: function (evt) { _this.onMouseDown(evt); },
-            mouseup: function (evt) { _this.onMouseUp(evt); },
-            mouseenter: function (evt) { _this.onMouseEnter(evt); },
-            mouseleave: function (evt) { _this.onMouseLeave(evt); }
+            mousemove: function (evt) { _this.onMouseMove(evt); evt.stopPropagation(); },
+            mousedown: function (evt) { _this.onMouseDown(evt); evt.stopPropagation(); },
+            mouseup: function (evt) { _this.onMouseUp(evt); evt.stopPropagation(); },
+            mouseenter: function (evt) { _this.onMouseEnter(evt); evt.stopPropagation(); },
+            mouseleave: function (evt) { _this.onMouseLeave(evt); evt.stopPropagation(); }
         });
     },
     /**#@+
