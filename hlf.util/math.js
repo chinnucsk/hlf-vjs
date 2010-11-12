@@ -1,5 +1,5 @@
-Namespace(pkg + 'util');
-Namespace.use(pkg + '*', function () {
+_.namespace(pkg + 'util');
+_.using(pkg + '*', function () {
 //---------------------------------------
 // CONVERSIONS
 //---------------------------------------
@@ -68,6 +68,7 @@ util.bufferedRandom = function (num, buffer) {
  * @param {number=} buffer Ratio to keep outside of random, defaults to 1.
  * @param {number=} pow Power, defaults to 2.
  * @return {number}
+ * @see {hlf.util.bufferedRandom}
  */
 util.curvingBufferedRandom = function (num, buffer, pow) {
     buffer = (buffer !== undefined) ? buffer : 1;

@@ -1,6 +1,6 @@
 /** @exports util as hlf.util */
-Namespace(pkg + 'util');
-Namespace.use(pkg + '*', function () {
+_.namespace(pkg + 'util');
+_.using(pkg + '*', function () {
 // ----------------------------------------
 // LANGUAGE
 // ----------------------------------------

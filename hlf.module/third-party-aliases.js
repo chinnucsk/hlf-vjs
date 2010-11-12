@@ -1,5 +1,5 @@
-Namespace(pkg + 'module');
-Namespace.use(pkg + '*', function () {
+_.namespace(pkg + 'module');
+_.using(pkg + '*', function () {
 
 /**
  * @class Mixin to allow the observer pattern. Current aliased to 

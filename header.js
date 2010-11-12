@@ -34,11 +34,6 @@ var pkg = 'hlf.';
  * @namespace Custom jQuery events and data.
  */
 /**
- * @name Namespace
- * @namespace Tool to allow namespacing. Comes with some extra bells and whistles.
- *      <a href="http://github.com/smith/namespacedotjs/">github</a>
- */
-/**
  * @name Backbone
  * @namespace Tool to control models and provide simple evented objects. 
  *      <a href="http://documentcloud.github.com/backbone/">github</a>

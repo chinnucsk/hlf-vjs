@@ -3,8 +3,8 @@
  * @author peng@pengxwang.com (Peng Wang)
  */
 /** @exports util as hlf.util */
-Namespace(pkg + 'module');
-Namespace.use(pkg + '*', function () {
+_.namespace(pkg + 'module');
+_.using(pkg + '*', function () {
 /**
  * @class Settings object of view-model methods and properties for CirclePacker.
  *      No construction procedure.

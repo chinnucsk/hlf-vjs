@@ -4,8 +4,8 @@
  */
 /** @exports util as hlf.util */
 /** @exports module as hlf.module */
-Namespace(pkg + 'module');
-Namespace.use(pkg + '*', function () {
+_.namespace(pkg + 'module');
+_.using(pkg + '*', function () {
 /**
  * @class A custom wrapper class for the HTMLCanvasElement and its API. Its
  *      purpose is to simplify common tasks and provide an object-oriented API
@@ -236,8 +236,8 @@ module.Canvas = util.BaseClass(util.extend({
                 if (elapsed >= anim.duration) {
                     complete = true;
                 } else {
-                    _this.clear();                
-                    console.log('frame');
+                    _this.clear();
+                    // console.log('frame');
                 }
                 anim.cb(elapsed, complete);
             }, util.millisPerFrame(anim.opt.fps));  
