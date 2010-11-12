@@ -1,0 +1,4 @@
+requires
+* UnderscoreJS
+* BackboneJS
+* jQuery
