@@ -12,28 +12,28 @@
  * $toolbar.hideButton($('#some-button', $toolbar)); // hide the button
  */
 $.fn.toolbar = function (options) {    
-    var api = this.data(pkg + 'jquery.toolbar');
-    if (api) {
-        return api;
+  var api = this.data(pkg + 'jquery.toolbar');
+  if (api) {
+    return api;
+  }
+  var opt = $.extend(true, {}, $.fn.toolbar.defaults, options);
+  var sel = opt.selectors;
+  // temporary
+  $('button[data-href]', this).bind('click', function (evt) {
+    var $linkButton = $(this);
+    evt.preventDefault();
+    window.open($linkButton.attr('data-href'));
+  });
+  api = {
+    /** @methodOf jQuery.fn.toolbar */ 
+    hideButton: function ($button) {
+      $button.add($button.closest(sel.btnWrap).next(sel.btnSeparator))
+        .hide();
     }
-    var opt = $.extend(true, {}, $.fn.toolbar.defaults, options);
-    var sel = opt.selectors;
-    // temporary
-    $('button[data-href]', this).bind('click', function (evt) {
-        var $linkButton = $(this);
-        evt.preventDefault();
-        window.open($linkButton.attr('data-href'));
-    });
-    api = {
-        /** @methodOf jQuery.fn.toolbar */ 
-        hideButton: function ($button) {
-            $button.add($button.closest(sel.btnWrap).next(sel.btnSeparator))
-                .hide();
-        }
-    };
-    this.data(pkg + 'jquery.toolbar', api);
-    $.extend(this, api);
-    return this;
+  };
+  this.data(pkg + 'jquery.toolbar', api);
+  $.extend(this, api);
+  return this;
 };
 /** 
  * Properties:
@@ -42,7 +42,7 @@ $.fn.toolbar = function (options) {
  */
 $.fn.toolbar.defaults = {};
 $.fn.toolbar.defaults.selectors = {
-    btnWrap: '.btn-wrap',
-    btnSeparator: '.separator'
+  btnWrap: '.btn-wrap',
+  btnSeparator: '.separator'
 };
 })(jQuery);
