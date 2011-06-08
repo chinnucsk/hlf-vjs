@@ -15,7 +15,7 @@ _.using(pkg + '*', function () {
  * @property {number} R_VARIATION Amount of variation between radii.
  * @property {int} N_PASS Number of 'packing' passes, default is 35.
  */
-util.CirclePackerViewModel = util.BaseClass({
+util.CirclePackerViewModel = util.Class.extend({
   /** @lends util.CirclePackerViewModel# */
   N_BASE: undefined,
   R_BASE: undefined,
@@ -58,11 +58,11 @@ util.CirclePackerViewModel = util.BaseClass({
  * @param {?number=} rad
  * @param {?Object=} pos
  */
-util.Circle = util.BaseClass({
+util.Circle = util.Class.extend({
   /** @lends util.Circle# */
   rad: undefined,
   pos: undefined,
-  _construct: function (rad, pos) {
+  _init: function (rad, pos) {
     this.rad = rad || 0;
     this.pos = pos || {x: 0, y: 0};
   },
@@ -123,7 +123,7 @@ util.Circle = util.BaseClass({
  * @param {Object number=} arg2 If arg1 is circles, origin.
  * @param {Object number=} arg3 If arg1 is circles, passes.
  */
-module.CirclePacker = util.BaseClass(util.extend({
+module.CirclePacker = util.Class.extend(util.extend({
   /** @lends module.CirclePacker# */
   circles: undefined,
   vm: undefined,
@@ -138,7 +138,7 @@ module.CirclePacker = util.BaseClass(util.extend({
    *      manager by having its circles map to the nodes.
    * @param {Array} arguments
    */
-  _construct: function () {
+  _init: function () {
     if (arguments.length > 1) {
       this.circles = arguments[0];
       this.origin = arguments[1];
@@ -153,7 +153,7 @@ module.CirclePacker = util.BaseClass(util.extend({
       for (i = 0; i < num; i++) {
         rad = this.vm.getRad(i / num);
         pos = this.vm.getPos(i / num, rad);
-        this.circles[i] = util.Circle.create(rad, pos);
+        this.circles[i] = new util.Circle(rad, pos);
       }
     }
   },
@@ -204,7 +204,7 @@ module.CirclePacker = util.BaseClass(util.extend({
    */
   _iterator: function (pass) {
     var ci, cj, dx, dy, d, r, i, j,
-      v = util.Vector.create(),
+      v = new util.Vector(),
       _this = this;
     this.circles.sort(function (c1, c2) {
       return _this._compare(c1, c2);
@@ -246,7 +246,7 @@ module.CirclePacker = util.BaseClass(util.extend({
       ci = this.circles[i];
       x = (ci.pos.x - this.origin.x) * damping;
       y = (ci.pos.y - this.origin.y) * damping;
-      ci.shiftAgainst(util.Vector.create(x, y));
+      ci.shiftAgainst(new util.Vector(x, y));
     }
   },
   /** 

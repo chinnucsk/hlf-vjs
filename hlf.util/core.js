@@ -1,6 +1,6 @@
 /** @exports util as hlf.util */
 _.namespace(pkg + 'util');
-_.using(pkg + '*', function () {
+_.using(pkg + '*', function() {
 // ----------------------------------------
 // LANGUAGE
 // ----------------------------------------
@@ -8,7 +8,7 @@ _.using(pkg + '*', function () {
  * @param {number} num
  * @return {int}
  */
-util.toInt = function (num) {
+util.toInt = function(num){
   return parseInt(num, 10);
 };
 /**
@@ -16,11 +16,11 @@ util.toInt = function (num) {
  * @param {string} num
  * @return {string}
  */
-util.camelCase = function (name) {
+util.camelCase = function(name){
   if (arguments.length > 0) {
     name = arguments.join('-');
   } 
-  return name.replace(/([-_][a-z])/g, function ($1) {
+  return name.replace(/([-_][a-z])/g, function($1){
     return $1.toUpperCase().replace(/[-_]/, '');
   });
 };
@@ -28,14 +28,14 @@ util.camelCase = function (name) {
  * @param {mixed} obj
  * @return {boolean}
  */
-util.isNumber = function (obj) {
+util.isNumber = function(obj){
   return (obj === +obj) || (toString.call(obj) === '[object Number]');
 };
 /** 
  * @param {mixed} obj
  * @return {boolean}
  */
-util.isFunction = function (obj) {
+util.isFunction = function(obj){
   return !!(obj && obj.constructor && obj.call && obj.apply) || 
     (toString.call(obj) === "[object Function]");
 };
@@ -44,7 +44,7 @@ util.isFunction = function (obj) {
  * @param {mixed} obj
  * @return {boolean}
  */
-util.isArray = Array.prototype.isArray || function(obj) {
+util.isArray = Array.prototype.isArray || function(obj){
   return !!(obj && obj.concat && obj.unshift && !obj.callee);
 };
 /** 
@@ -52,7 +52,7 @@ util.isArray = Array.prototype.isArray || function(obj) {
  * @return {boolean}
  * @see <a href="http://api.jquery.com/jQuery.isPlainObject/">api.jquery.com</a>
  */
-util.isPlainObject = function (obj) {
+util.isPlainObject = function(obj){
   // Must be an Object.
   // Because of IE, we also have to check the presence of the constructor property.
   // Make sure that DOM nodes and window objects don't pass through, as well
@@ -76,7 +76,7 @@ util.isPlainObject = function (obj) {
  * @return {Object} 
  * @see <a href="http://api.jquery.com/jQuery.extend/">api.jquery.com</a>
  */
-util.extend = function () {
+util.extend = function(){
   // copy reference to target object
   var target = arguments[0] || {},
     i = 1,
@@ -128,7 +128,7 @@ util.extend = function () {
  * @return {Array}
  * @see <a href="http://api.jquery.com/jQuery.map/">api.jquery.com</a>
  */
-util.map = function (elems, callback, arg) {
+util.map = function(elems, callback, arg){
   var ret = [],
     value;
 
@@ -151,7 +151,7 @@ util.map = function (elems, callback, arg) {
  * @return {Object}
  * @see <a href="http://api.jquery.com/jQuery.each/">api.jquery.com</a>
  */
-util.each = function (object, callback, args) {
+util.each = function(object, callback, args){
   var name, i = 0,
     length = object.length,
     isObj = length === undefined || util.isFunction(object);
@@ -187,68 +187,63 @@ util.each = function (object, callback, args) {
 // ----------------------------------------
 // OOP
 // ----------------------------------------
-/**
- * Copies the object to the prototype of a one-shot constructor.
- * @param {!Object} object The target.
- * @return {Object} One-shot constructor instance.
+/* Simple JavaScript Inheritance
+ * By John Resig http://ejohn.org/
+ * MIT Licensed.
  */
-util.clone = function (object) {
-  var OneShotConstructor = function () {};
-  OneShotConstructor.prototype = object;
-  return new OneShotConstructor();
-};
 /**
- * All classes should extend this class. It works like a factory for new classes.
- *      It is a superclass in name only and works more as a bridge between MyClass
- *      and Class.
- * @class 
- * @constructor
- * @augments hlf.util.Class
- * @return {hlf.util.BaseClass}
- */
-util.BaseClass = function (object) {
-  var Class = new util.Class();
-  return Class.extend(object);
-};
-/**
- * OOP extension of Object. Part of process to create new class.
+ * The base Class implementation (does nothing)
  * @class
- * @constructor
  */
-util.Class = function () {};
-util.Class.prototype = {
+util.Class = function(){};
+// Inspired by base2 and Prototype
+(function(){
+  var initializing = false, 
+      fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
   /**
-   * Instantiation API. Creates a clone of the class and calls _construct.
-   * @return {mixed} Instance.
+   * Create a new Class that inherits from this class
+   * @static
    */
-  create: function () {
-    var object = util.clone(this);
-    if (util.isFunction(object._construct)) {
-      object._construct.apply(object, arguments);
+  util.Class.extend = function(prop){
+    var _super = this.prototype;
+    // Instantiate a base class (but only create the instance,
+    // don't run the init constructor)
+    initializing = true;
+    var prototype = new this();
+    initializing = false;
+    // Copy the properties over onto the new prototype
+    for (var name in prop){
+      // Check if we're overwriting an existing function
+      prototype[name] = typeof prop[name] == "function" && 
+        typeof _super[name] == "function" && fnTest.test(prop[name]) ?
+        (function(name, fn){
+          return function(){
+            var tmp = this._super;
+            // Add a new ._super() method that is the same method
+            // but on the super-class
+            this._super = _super[name];
+            // The method only need to be bound temporarily, so we
+            // remove it when we're done executing
+            var ret = fn.apply(this, arguments);        
+            this._super = tmp;
+            return ret;
+          };
+        })(name, prop[name]) :
+        prop[name];
     }
-    return object;
-  }, 
-  /**
-   * Subclassing API.
-   * @param {!Object} object Properties and methods.
-   * @return {mixed} Subclass.
-   */
-  extend: function (object) {
-    var sub = util.clone(this); // this = super
-    util.each(object, function (name, value) {
-      sub[name] = value;
-    });
-    return sub;
-  },
-  /**
-   * Allows a class to identify superclasses.
-   * @param {!Object} object Properties and methods.
-   * @return {boolean}
-   */
-  is: function (prototype) {
-    var DummyConstructor = function () {};
-    DummyConstructor.prototype = prototype;
-    return this instanceof DummyConstructor;
-  }
-};
+    // The dummy class constructor
+    var Class = function(){
+      // All construction is actually done in the init method
+      if ( !initializing && this._init )
+        this._init.apply(this, arguments);
+    };
+    // Populate our constructed prototype object
+    Class.prototype = prototype;
+    // Enforce the constructor to be what we expect
+    Class.constructor = Class;
+    // And make this class extendable
+    Class.extend = arguments.callee;
+    return Class;
+  };
+})();
 }); // namespace

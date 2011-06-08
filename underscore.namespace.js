@@ -3,7 +3,7 @@
  * @author Maxime Bouroumeau-Fuseau (original)
  * @author Peng Wang 
  */
-(function () {
+(function(window){
   /**
    * Creates an Object following the specified namespace identifier.
    * @param {string} identifier The namespace string.
@@ -46,6 +46,9 @@
     var callback = arguments[1] || false;
     var event = { 'identifier': identifier };
     var parts, target, ns;
+    var import_ = function(objectName, ns){
+      window[objectName] = ns[objectName];
+    };
     for (var i = 0; i < identifiers.length; i++) {
       identifier = identifiers[i];
       parts = identifier.split(_.namespacer);
@@ -55,22 +58,22 @@
         // imports all objects from the identifier, can't use include() in that case
         for (var objectName in ns) {
           if (ns.hasOwnProperty(objectName)) {
-            window[objectName] = ns[objectName];
+            import_(objectName, ns);
           }
         }
       } else if (ns[target]) {
         // imports only one object
-        window[target] = ns[target];
+        import_(target, ns);
       }
     }
     // all identifiers have been unpacked
     if (typeof callback === "function") { 
       callback(); 
-    }  
+    }
   };
   /**
    * Namespace segment separator
    * @var String
    */
   _.namespacer = '.';    
-})();
+})(window);

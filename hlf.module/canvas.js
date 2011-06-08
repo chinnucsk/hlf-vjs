@@ -24,7 +24,7 @@ _.using(pkg + '*', function () {
  * @param {!string} id Canvas DOM element id.
  * @param {?string=} type Canvas context/API type.
  */
-module.Canvas = util.BaseClass(util.extend({
+module.Canvas = util.Class.extend(util.extend({
   /** @lends module.Canvas# */
   // ----------------------------------------
   // PROPERTIES
@@ -44,7 +44,7 @@ module.Canvas = util.BaseClass(util.extend({
    * Gets the element by id and sets the dimension properties via existing 
    *      CSS properties.
    */
-  _construct: function (id, type) {
+  _init: function (id, type) {
     this.canvas = document.getElementById(id);
     if (!this.canvas.getAttribute('width')) {
       this.canvas.setAttribute('width', this.canvas.clientWidth);
@@ -55,7 +55,7 @@ module.Canvas = util.BaseClass(util.extend({
     this._plotters = [];
     this._animations = [];
     this._animationTimers = [];
-    this.animationState = module.Canvas.AnimationState.STOPPED;
+    this.animationState = AnimationState.STOPPED;
     this.anticlockwise = true;
   },
   //---------------------------------------
@@ -247,7 +247,7 @@ module.Canvas = util.BaseClass(util.extend({
         anim.cb();
       }, util.millisPerFrame(anim.opt.fps));  
     }
-    this.animationState = module.Canvas.AnimationState.PLAYING;
+    this.animationState = AnimationState.PLAYING;
   },
   /** 
    * Clears the timer and sets state to paused.
@@ -255,7 +255,7 @@ module.Canvas = util.BaseClass(util.extend({
    */
   _stopAnimation: function (idx) {
     clearInterval(this._animationTimers[idx]);
-    this.animationState = module.Canvas.AnimationState.PAUSED;
+    this.animationState = AnimationState.PAUSED;
   },
   /** 
    * Removes the timer and animation from the respective indexes.
@@ -266,7 +266,7 @@ module.Canvas = util.BaseClass(util.extend({
     this._stopAnimation(idx);
     this._animationTimers.splice(idx, 1);
     this._animations.splice(idx, 1);
-    this.animationState = module.Canvas.AnimationState.STOPPED;
+    this.animationState = AnimationState.STOPPED;
   },
   /**
    * Temporary, for now.
@@ -284,18 +284,18 @@ module.Canvas = util.BaseClass(util.extend({
    * @param {?number=} idx Id of animation and timer.
    */
   changeAnimationStateTo: function (key, idx) {
-    if (!this.AnimationState[key]) {
+    if (!AnimationState[key]) {
       return;
     }
     var anim = this._animations[idx || this._animations.length - 1];
-    switch (this.AnimationState[key]) {
-      case module.Canvas.AnimationState.PLAYING:
+    switch (this.animationState[key]) {
+      case AnimationState.PLAYING:
         this._startAnimation(anim, idx);
         break;
-      case module.Canvas.AnimationState.PAUSED:
+      case AnimationState.PAUSED:
         this._stopAnimation(idx);
         break;
-      case module.Canvas.AnimationState.STOPPED:
+      case AnimationState.STOPPED:
         this._deleteAnimation(idx);
         break;
     }
@@ -321,7 +321,7 @@ module.Canvas = util.BaseClass(util.extend({
    * @param {?number=} idx Id of animation and timer.
    */
   togglePauseAndPlay: function (idx) {
-    if (this.animationState === module.Canvas.AnimationState.PLAYING) {
+    if (this.animationState === AnimationState.PLAYING) {
       this.changeAnimationStateTo('PAUSED', idx);
     } else {
       this.changeAnimationStateTo('PLAYING', idx);
@@ -370,7 +370,7 @@ module.Canvas = util.BaseClass(util.extend({
  * @type {Object int}
  * @static 
  */
-module.Canvas.AnimationState = {
+var AnimationState = module.Canvas.AnimationState = {
   PLAYING: 1,
   PAUSED: 2,
   STOPPED: 3
@@ -404,4 +404,41 @@ util.CanvasEventMixin = {
   onMouseLeave: function (evt) {}
   /**#@-*/
 };
+/**
+ * TODO
+ */
+module.CanvasApplication = util.Class.extend(util.extend({
+  /**
+   * jQuery object resulting from the toolbar plugin. Has buttons including:
+   *      #stop-animation and #export-canvas. Own id is #the-canvas-toolbar.
+   * @requires jQuery.fn.toolbar
+   * @type {jQuery}
+   */
+  $toolbar: null,
+  $stopper: null,
+  $exporter: null,
+  canvas: null,
+  opt: {},
+  _init: function(opt){
+    this.opt = util.extend(this.opt, opt);
+  },
+  setup: function(){
+    this.$exporter = $('#export-canvas')
+      .bind('click', $.proxy(function(evt){
+        this.canvas.exportAsImage();
+        evt.preventDefault();
+      }, this));
+    this.$stopper = $('#stop-animation')
+      .bind('click', $.proxy(function(evt){
+        var $elem = $(this);
+        this.canvas.togglePauseAndPlay();
+        $elem.text(($elem.text() === 'stop') ? 'play' : 'stop');
+        evt.preventDefault();
+      }, this));
+    this.$toolbar = $('#the-canvas-toolbar').toolbar();
+  },
+  teardown: function(){},
+  start: function(){},
+  stop: function(){},
+}, module.EventMixin));
 }); // namespace

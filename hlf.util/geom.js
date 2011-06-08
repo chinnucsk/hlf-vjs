@@ -14,12 +14,12 @@ _.using(pkg + '*', function () {
  * @param {number} x Starting x component, defaults to 0.
  * @param {number} y Starting y component, defaults to 0.
  */
-util.Vector = util.BaseClass({
+util.Vector = util.Class.extend({
   /** @lends util.Vector# */
   x: undefined,
   y: undefined,
   mag: undefined,
-  _construct: function (x, y) {
+  _init: function (x, y) {
     this.x = x || 0;
     this.y = y || 0;
     this.getMagnitude();
