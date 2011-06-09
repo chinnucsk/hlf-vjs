@@ -37,6 +37,7 @@
    *      segment (eg: com.test.*) which will import all properties from the namespace.
    *      If not, the targeted namespace will be imported (ie. if com.test is 
    *      imported, the test object will now be global). 
+   * NOTE: Remember that importing is destructive to the global namespace. Use as last resort.
    * @public
    * @param {string} identifier The namespace string.
    * @param {?function=} callback A function to call when the process is completed

@@ -1,5 +1,9 @@
-_.namespace(pkg + 'util');
-_.using(pkg + '*', function () {
+// ----------------------------------------
+// INTRO
+// ----------------------------------------
+_.namespace(hlfPkg + '.util');
+(function(hlf){
+var Ut = hlf.util;
 //---------------------------------------
 // CONVERSIONS
 //---------------------------------------
@@ -8,7 +12,7 @@ _.using(pkg + '*', function () {
  * @param {!number} num Frames per second.
  * @return {number} Millis for each frame.
  */
-util.millisPerFrame = function (num) {
+Ut.millisPerFrame = function (num) {
   return parseInt(1000 / num, 10);
 };
 //---------------------------------------
@@ -20,7 +24,7 @@ util.millisPerFrame = function (num) {
  * @param {!number} b
  * @return {number} c
  */
-util.dist = function (a, b) {
+Ut.dist = function (a, b) {
   return Math.sqrt((a * a) + (b * b));
 };
 /**
@@ -30,7 +34,7 @@ util.dist = function (a, b) {
  * @param {!number} max
  * @return {number}
  */
-util.constrain = function (num, min, max) {
+Ut.constrain = function (num, min, max) {
   return Math.min(Math.max(num, min), max);
 };
 /**
@@ -39,7 +43,7 @@ util.constrain = function (num, min, max) {
  * @param {number=} from
  * @return {number}
  */
-util.simpleRandom = function (to, from) {
+Ut.simpleRandom = function (to, from) {
   from = (from !== undefined) ? from : 0;
   return (to - from) * Math.random() + from;
 };
@@ -47,7 +51,7 @@ util.simpleRandom = function (to, from) {
  * Returns either -1 or 1.
  * @return {number} 
  */
-util.simpleDirection = function () {
+Ut.simpleDirection = function () {
   return Math.random() < 0.5 ? -1 : 1;
 };
 /** 
@@ -58,7 +62,7 @@ util.simpleDirection = function () {
  * @return {number}
  * @example util.bufferedRandom(100) // more likely to return 50+
  */
-util.bufferedRandom = function (num, buffer) {
+Ut.bufferedRandom = function (num, buffer) {
   buffer = (buffer !== undefined) ? buffer : 1;
   return num / (buffer + 1) * (Math.random() + buffer);
 };
@@ -70,7 +74,7 @@ util.bufferedRandom = function (num, buffer) {
  * @return {number}
  * @see {hlf.util.bufferedRandom}
  */
-util.curvingBufferedRandom = function (num, buffer, pow) {
+Ut.curvingBufferedRandom = function (num, buffer, pow) {
   buffer = (buffer !== undefined) ? buffer : 1;
   pow = (pow !== undefined) ? pow : 2;
   return num / (buffer + 1) * (Math.pow(Math.random(), pow) + buffer);
@@ -86,10 +90,13 @@ util.curvingBufferedRandom = function (num, buffer, pow) {
  * @param {!int} d Duration, in millis.
  * @return {number} Size of current step.
  */
-util.easeInOutCubic = function (t, b, c, d) {
+Ut.easeInOutCubic = function (t, b, c, d) {
   if ((t /= d / 2) < 1) {
     return c / 2 * t * t * t + b;
   }
   return c / 2 * ((t -= 2) * t * t + 2) + b; 
 };
-}); // namespace
+// ----------------------------------------
+// OUTRO
+// ----------------------------------------
+})(_.namespace(hlfPkg));

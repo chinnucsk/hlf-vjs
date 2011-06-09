@@ -1,5 +1,9 @@
-_.namespace(pkg + 'util');
-_.using(pkg + '*', function () {
+// ----------------------------------------
+// INTRO
+// ----------------------------------------
+_.namespace(hlfPkg + '.util');
+(function(hlf){
+var Ut = hlf.util;
 //---------------------------------------
 // CLASSES
 //---------------------------------------
@@ -14,7 +18,7 @@ _.using(pkg + '*', function () {
  * @param {number} x Starting x component, defaults to 0.
  * @param {number} y Starting y component, defaults to 0.
  */
-util.Vector = util.Class.extend({
+Ut.Vector = Ut.Class.extend({
   /** @lends util.Vector# */
   x: undefined,
   y: undefined,
@@ -31,7 +35,7 @@ util.Vector = util.Class.extend({
    */
   getMagnitude: function (fresh) {
     if (!this.mag || fresh) {
-      this.mag = util.dist(this.x, this.y);
+      this.mag = Ut.dist(this.x, this.y);
     }
     return this.mag;
   },
@@ -66,7 +70,10 @@ util.Vector = util.Class.extend({
   },
   /** @ignore */
   toString: function () {
-    return pkg + 'util.Vector';
+    return hlfPkg + 'util.Vector';
   }
 }); 
-}); // namespace
+// ----------------------------------------
+// OUTRO
+// ----------------------------------------
+})(_.namespace(hlfPkg));

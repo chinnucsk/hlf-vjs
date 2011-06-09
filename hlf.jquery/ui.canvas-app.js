@@ -12,7 +12,7 @@
  * $toolbar.hideButton($('#some-button', $toolbar)); // hide the button
  */
 $.fn.toolbar = function (options) {    
-  var api = this.data(pkg + 'jquery.toolbar');
+  var api = this.data(hlfPkg + '.jquery.toolbar');
   if (api) {
     return api;
   }
@@ -31,7 +31,7 @@ $.fn.toolbar = function (options) {
         .hide();
     }
   };
-  this.data(pkg + 'jquery.toolbar', api);
+  this.data(hlfPkg + '.jquery.toolbar', api);
   $.extend(this, api);
   return this;
 };

@@ -16,17 +16,17 @@
  */
 /** @name window */
 /** Shorthand for app package namespace. */
-var pkg = 'hlf.';
+var hlfPkg = 'hlf';
 /** @exports com.pengxwang as hlf */
-// pkg = 'com.pengxwang.'; // use if really necessary
+// hlfPkg = 'com.pengxwang'; // use if really necessary
 /**
  * Utility methods, mixins, and classes. Categories include console, 
  *      core, geom, math, etc.
- * @name hlf.util
+ * @name hlf.hlfUtil
  * @namespace 
  */
 /**
- * @name hlf.module
+ * @name hlf.hlfModule
  * @namespace Module classes and mixins.
  */
 /**

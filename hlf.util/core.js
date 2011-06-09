@@ -1,6 +1,10 @@
-/** @exports util as hlf.util */
-_.namespace(pkg + 'util');
-_.using(pkg + '*', function() {
+/** @exports Ut as hlf.util */
+// ----------------------------------------
+// INTRO
+// ----------------------------------------
+_.namespace(hlfPkg + '.util');
+(function(hlf){
+var Ut = hlf.util;
 // ----------------------------------------
 // LANGUAGE
 // ----------------------------------------
@@ -8,7 +12,7 @@ _.using(pkg + '*', function() {
  * @param {number} num
  * @return {int}
  */
-util.toInt = function(num){
+Ut.toInt = function(num){
   return parseInt(num, 10);
 };
 /**
@@ -16,7 +20,7 @@ util.toInt = function(num){
  * @param {string} num
  * @return {string}
  */
-util.camelCase = function(name){
+Ut.camelCase = function(name){
   if (arguments.length > 0) {
     name = arguments.join('-');
   } 
@@ -28,14 +32,14 @@ util.camelCase = function(name){
  * @param {mixed} obj
  * @return {boolean}
  */
-util.isNumber = function(obj){
+Ut.isNumber = function(obj){
   return (obj === +obj) || (toString.call(obj) === '[object Number]');
 };
 /** 
  * @param {mixed} obj
  * @return {boolean}
  */
-util.isFunction = function(obj){
+Ut.isFunction = function(obj){
   return !!(obj && obj.constructor && obj.call && obj.apply) || 
     (toString.call(obj) === "[object Function]");
 };
@@ -44,7 +48,7 @@ util.isFunction = function(obj){
  * @param {mixed} obj
  * @return {boolean}
  */
-util.isArray = Array.prototype.isArray || function(obj){
+Ut.isArray = Array.prototype.isArray || function(obj){
   return !!(obj && obj.concat && obj.unshift && !obj.callee);
 };
 /** 
@@ -52,7 +56,7 @@ util.isArray = Array.prototype.isArray || function(obj){
  * @return {boolean}
  * @see <a href="http://api.jquery.com/jQuery.isPlainObject/">api.jquery.com</a>
  */
-util.isPlainObject = function(obj){
+Ut.isPlainObject = function(obj){
   // Must be an Object.
   // Because of IE, we also have to check the presence of the constructor property.
   // Make sure that DOM nodes and window objects don't pass through, as well
@@ -76,13 +80,13 @@ util.isPlainObject = function(obj){
  * @return {Object} 
  * @see <a href="http://api.jquery.com/jQuery.extend/">api.jquery.com</a>
  */
-util.extend = function(){
+Ut.extend = function(){
   // copy reference to target object
   var target = arguments[0] || {},
-    i = 1,
-    length = arguments.length,
-    deep = false,
-    options, name, src, copy;
+      i = 1,
+      length = arguments.length,
+      deep = false,
+      options, name, src, copy;
   // Handle a deep copy situation
   if (typeof target === "boolean") {
     deep = target;
@@ -91,7 +95,7 @@ util.extend = function(){
     i = 2;
   }
   // Handle case when target is a string or something (possible in deep copy)
-  if (typeof target !== "object" && !util.isFunction(target)) {
+  if (typeof target !== "object" && !Ut.isFunction(target)) {
     target = {};
   }
   for (; i < length; i++) {
@@ -106,10 +110,10 @@ util.extend = function(){
           continue;
         }
         // Recurse if we're merging object literal values or arrays
-        if (deep && copy && (util.isPlainObject(copy) || util.isArray(copy))) {
-          var clone = src && (util.isPlainObject(src) || util.isArray(src)) ? src : util.isArray(copy) ? [] : {};
+        if (deep && copy && (Ut.isPlainObject(copy) || Ut.isArray(copy))) {
+          var clone = src && (Ut.isPlainObject(src) || Ut.isArray(src)) ? src : Ut.isArray(copy) ? [] : {};
           // Never move original objects, clone them
-          target[name] = util.extend(deep, clone, copy);
+          target[name] = Ut.extend(deep, clone, copy);
           // Don't bring in undefined values
         } else if (copy !== undefined) {
           target[name] = copy;
@@ -128,7 +132,7 @@ util.extend = function(){
  * @return {Array}
  * @see <a href="http://api.jquery.com/jQuery.map/">api.jquery.com</a>
  */
-util.map = function(elems, callback, arg){
+Ut.map = function(elems, callback, arg){
   var ret = [],
     value;
 
@@ -151,10 +155,10 @@ util.map = function(elems, callback, arg){
  * @return {Object}
  * @see <a href="http://api.jquery.com/jQuery.each/">api.jquery.com</a>
  */
-util.each = function(object, callback, args){
+Ut.each = function(object, callback, args){
   var name, i = 0,
     length = object.length,
-    isObj = length === undefined || util.isFunction(object);
+    isObj = length === undefined || Ut.isFunction(object);
   if (args) {
     if (isObj) {
       for (name in object) {
@@ -195,7 +199,7 @@ util.each = function(object, callback, args){
  * The base Class implementation (does nothing)
  * @class
  */
-util.Class = function(){};
+Ut.Class = function(){};
 // Inspired by base2 and Prototype
 (function(){
   var initializing = false, 
@@ -204,7 +208,7 @@ util.Class = function(){};
    * Create a new Class that inherits from this class
    * @static
    */
-  util.Class.extend = function(prop){
+  Ut.Class.extend = function(prop){
     var _super = this.prototype;
     // Instantiate a base class (but only create the instance,
     // don't run the init constructor)
@@ -246,4 +250,7 @@ util.Class = function(){};
     return Class;
   };
 })();
-}); // namespace
+// ----------------------------------------
+// OUTRO
+// ----------------------------------------
+})(_.namespace(hlfPkg));

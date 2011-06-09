@@ -2,9 +2,13 @@
  * @fileoverview Mostly ported from moocirclepack.js
  * @author peng@pengxwang.com (Peng Wang)
  */
-/** @exports util as hlf.util */
-_.namespace(pkg + 'module');
-_.using(pkg + '*', function () {
+// ----------------------------------------
+// INTRO
+// ----------------------------------------
+/** @exports Ut as hlf.util */
+_.namespace(hlfPkg + '.module');
+(function(hlf){
+var Ut = hlf.util, Mod = hlf.module;
 /**
  * @class Settings object of view-model methods and properties for CirclePacker.
  *      No construction procedure.
@@ -15,7 +19,7 @@ _.using(pkg + '*', function () {
  * @property {number} R_VARIATION Amount of variation between radii.
  * @property {int} N_PASS Number of 'packing' passes, default is 35.
  */
-util.CirclePackerViewModel = util.Class.extend({
+Ut.CirclePackerViewModel = Ut.Class.extend({
   /** @lends util.CirclePackerViewModel# */
   N_BASE: undefined,
   R_BASE: undefined,
@@ -47,7 +51,7 @@ util.CirclePackerViewModel = util.Class.extend({
   getOrigin: function () {},
   /** @ignore */
   toString: function () {
-    return pkg + 'util.CirclePackerViewModel';
+    return hlfPkg + 'util.CirclePackerViewModel';
   }
 });
 /**
@@ -58,7 +62,7 @@ util.CirclePackerViewModel = util.Class.extend({
  * @param {?number=} rad
  * @param {?Object=} pos
  */
-util.Circle = util.Class.extend({
+Ut.Circle = Ut.Class.extend({
   /** @lends util.Circle# */
   rad: undefined,
   pos: undefined,
@@ -98,7 +102,7 @@ util.Circle = util.Class.extend({
   },
   /** @ignore */
   toString: function () {
-    return pkg + 'util.Circle';
+    return hlfPkg + 'util.Circle';
   }
 });
 /**
@@ -123,7 +127,7 @@ util.Circle = util.Class.extend({
  * @param {Object number=} arg2 If arg1 is circles, origin.
  * @param {Object number=} arg3 If arg1 is circles, passes.
  */
-module.CirclePacker = util.Class.extend(util.extend({
+Mod.CirclePacker = Ut.Class.extend(Ut.extend({
   /** @lends module.CirclePacker# */
   circles: undefined,
   vm: undefined,
@@ -149,11 +153,11 @@ module.CirclePacker = util.Class.extend(util.extend({
       this.circles = [];
       this.passes = this.vm.N_PASS;
       var num = this.vm.N_BASE,
-        rad, i;
+          rad, i;
       for (i = 0; i < num; i++) {
         rad = this.vm.getRad(i / num);
         pos = this.vm.getPos(i / num, rad);
-        this.circles[i] = new util.Circle(rad, pos);
+        this.circles[i] = new Ut.Circle(rad, pos);
       }
     }
   },
@@ -204,8 +208,8 @@ module.CirclePacker = util.Class.extend(util.extend({
    */
   _iterator: function (pass) {
     var ci, cj, dx, dy, d, r, i, j,
-      v = new util.Vector(),
-      _this = this;
+        v = new Ut.Vector(),
+        _this = this;
     this.circles.sort(function (c1, c2) {
       return _this._compare(c1, c2);
     });
@@ -246,7 +250,7 @@ module.CirclePacker = util.Class.extend(util.extend({
       ci = this.circles[i];
       x = (ci.pos.x - this.origin.x) * damping;
       y = (ci.pos.y - this.origin.y) * damping;
-      ci.shiftAgainst(new util.Vector(x, y));
+      ci.shiftAgainst(new Ut.Vector(x, y));
     }
   },
   /** 
@@ -273,12 +277,15 @@ module.CirclePacker = util.Class.extend(util.extend({
    */
   _distanceTo: function(pos1, pos2) {
     var dx = pos1.x - pos2.x,
-      dy = pos1.y - pos2.y;
-    return util.dist(dx, dy);
+        dy = pos1.y - pos2.y;
+    return Ut.dist(dx, dy);
   },
   /** @ignore */
   toString: function () {
-    return pkg + 'module.CirclePacker';
+    return hlfPkg + '.module.CirclePacker';
   }
-}, module.EventMixin));
-}); // namespace
+}, Mod.EventMixin));
+// ----------------------------------------
+// OUTRO
+// ----------------------------------------
+})(_.namespace(hlfPkg));

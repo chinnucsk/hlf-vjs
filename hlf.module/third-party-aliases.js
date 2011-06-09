@@ -1,11 +1,14 @@
-_.namespace(pkg + 'module');
-_.using(pkg + '*', function () {
-
+// ----------------------------------------
+// INTRO
+// ----------------------------------------
+_.namespace(hlfPkg + '.module');
+(function(hlf){
+var Ut = hlf.util, Mod = hlf.module;
 /**
  * @class Mixin to allow the observer pattern. Current aliased to 
  *      {@link Backbone.Events}.
  */
-module.EventMixin = Backbone.Events;
+Mod.EventMixin = Backbone.Events;
 /** 
  * @name hlf.module.EventMixin#bind 
  * @function
@@ -18,4 +21,7 @@ module.EventMixin = Backbone.Events;
  * @name hlf.module.EventMixin#unbind 
  * @function
  */
-});
+// ----------------------------------------
+// OUTRO
+// ----------------------------------------
+})(_.namespace(hlfPkg));

@@ -2,10 +2,11 @@
  * @fileoverview Canvas module.
  * @author peng@pengxwang.com (Peng Wang)
  */
-/** @exports util as hlf.util */
-/** @exports module as hlf.module */
-_.namespace(pkg + 'module');
-_.using(pkg + '*', function () {
+/** @exports Ut as hlf.util */
+/** @exports Mod as hlf.module */
+_.namespace(hlfPkg + '.module');
+(function(hlf){
+var Ut = hlf.util, Mod = hlf.module;
 /**
  * @class A custom wrapper class for the HTMLCanvasElement and its API. Its
  *      purpose is to simplify common tasks and provide an object-oriented API
@@ -24,7 +25,7 @@ _.using(pkg + '*', function () {
  * @param {!string} id Canvas DOM element id.
  * @param {?string=} type Canvas context/API type.
  */
-module.Canvas = util.Class.extend(util.extend({
+Mod.Canvas = Ut.Class.extend(Ut.extend({
   /** @lends module.Canvas# */
   // ----------------------------------------
   // PROPERTIES
@@ -113,7 +114,7 @@ module.Canvas = util.Class.extend(util.extend({
    */
   sequence: function (opt, cb) {
     var plotter = this._plotter,
-      context = this.context;
+        context = this.context;
     opt = opt || {'x': 10, 'y': 10, 'num': 10};
     for (var idx = 0; idx < opt.num; idx += 1) {
       cb({
@@ -131,7 +132,7 @@ module.Canvas = util.Class.extend(util.extend({
    */
   circle: function (rad, noFill, noStroke) {
     var plotter = this._plotter,
-      context = this.context;
+        context = this.context;
     context.beginPath();
     context.arc(plotter.pos.x + rad + 1, 
           plotter.pos.y + rad + 1, 
@@ -229,8 +230,8 @@ module.Canvas = util.Class.extend(util.extend({
     }
     if (anim.duration) {
       var start = this.millis(), 
-        elapsed = 0,
-        complete = false;
+          elapsed = 0,
+          complete = false;
       this._animationTimers[idx] = setInterval(function () {
         elapsed = _this.millis() - start;
         if (elapsed >= anim.duration) {
@@ -240,12 +241,12 @@ module.Canvas = util.Class.extend(util.extend({
           // console.log('frame');
         }
         anim.cb(elapsed, complete);
-      }, util.millisPerFrame(anim.opt.fps));  
+      }, Ut.millisPerFrame(anim.opt.fps));  
     } else {
       this._animationTimers[idx] = setInterval(function () {
         _this.clear();
         anim.cb();
-      }, util.millisPerFrame(anim.opt.fps));  
+      }, Ut.millisPerFrame(anim.opt.fps));  
     }
     this.animationState = AnimationState.PLAYING;
   },
@@ -362,15 +363,15 @@ module.Canvas = util.Class.extend(util.extend({
   },
   /** @ignore */
   toString: function () {
-    return pkg + 'module.Canvas';
+    return hlfPkg + 'module.Canvas';
   }
-}, module.EventMixin));
+}, Mod.EventMixin));
 /**
  * Enum: PLAYING, PAUSED, STATIC.
  * @type {Object int}
  * @static 
  */
-var AnimationState = module.Canvas.AnimationState = {
+var AnimationState = Mod.Canvas.AnimationState = {
   PLAYING: 1,
   PAUSED: 2,
   STOPPED: 3
@@ -380,8 +381,8 @@ var AnimationState = module.Canvas.AnimationState = {
  * @requires jQuery
  * @requires For now, requires the class to have a $canvas property.
  */
-util.CanvasEventMixin = {
-  /** @lends util.CanvasEventMixin# */
+Ut.CanvasEventMixin = {
+  /** @lends Ut.CanvasEventMixin# */
   /** Sets up responsiveness for mouse events. */
   bindMouse: function () {
     var _this = this;
@@ -407,7 +408,7 @@ util.CanvasEventMixin = {
 /**
  * TODO
  */
-module.CanvasApplication = util.Class.extend(util.extend({
+Mod.CanvasApplication = Ut.Class.extend(Ut.extend({
   /**
    * jQuery object resulting from the toolbar plugin. Has buttons including:
    *      #stop-animation and #export-canvas. Own id is #the-canvas-toolbar.
@@ -420,7 +421,7 @@ module.CanvasApplication = util.Class.extend(util.extend({
   canvas: null,
   opt: {},
   _init: function(opt){
-    this.opt = util.extend(this.opt, opt);
+    this.opt = Ut.extend(this.opt, opt);
   },
   setup: function(){
     this.$exporter = $('#export-canvas')
@@ -440,5 +441,8 @@ module.CanvasApplication = util.Class.extend(util.extend({
   teardown: function(){},
   start: function(){},
   stop: function(){},
-}, module.EventMixin));
-}); // namespace
+}, Mod.EventMixin));
+// ----------------------------------------
+// OUTRO
+// ----------------------------------------
+})(_.namespace(hlfPkg));
