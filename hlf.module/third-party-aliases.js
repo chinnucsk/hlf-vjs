@@ -9,6 +9,10 @@ var Ut = hlf.util, Mod = hlf.module;
  *      {@link Backbone.Events}.
  */
 Mod.EventMixin = Backbone.Events;
+Mod.EventMixin.bind_ = function(event, callback, context, arguments_){
+  context = context || this;
+  this.bind(event, _.bind(callback, context, arguments_));
+};
 /** 
  * @name hlf.module.EventMixin#bind 
  * @function

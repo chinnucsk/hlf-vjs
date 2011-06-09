@@ -30,27 +30,27 @@ Ut.CirclePackerViewModel = Ut.Class.extend({
    * Delegate accessor for generating a radius.
    * @param {number=} rel Some sort of amplifier or control.
    */
-  getRad: function (rel) {},
+  getRad: function(rel){},
   /**
    * Delegate accessor for generating a x position within canvas bounds.
    * @param {number=} rad Radius factor for the calculation.
    */
-  getBX: function (rad) {},
+  getBX: function(rad){},
   /**
    * Delegate accessor for generating a y position within canvas bounds.
    * @param {number=} rad Radius factor for the calculation.
    */
-  getBY: function (rad) {},
+  getBY: function(rad){},
   /**
    * Delegate accessor for intially positioning the circle.
    * @param {number=} rel Some sort of amplifier or control.
    * @param {number=} rad Radius factor for the calculation.
    */
-  getPos: function (rel, rad) {},
+  getPos: function(rel, rad){},
   
-  getOrigin: function () {},
+  getOrigin: function(){},
   /** @ignore */
-  toString: function () {
+  toString: function(){
     return hlfPkg + 'util.CirclePackerViewModel';
   }
 });
@@ -66,7 +66,7 @@ Ut.Circle = Ut.Class.extend({
   /** @lends util.Circle# */
   rad: undefined,
   pos: undefined,
-  _init: function (rad, pos) {
+  _init: function(rad, pos){
     this.rad = rad || 0;
     this.pos = pos || {x: 0, y: 0};
   },
@@ -75,7 +75,7 @@ Ut.Circle = Ut.Class.extend({
    * @param {!hlf.util.Vector|Object} v Modifying set of components, 
    *      typically a vector.
    */
-  shiftAlong: function (v) {
+  shiftAlong: function(v){
     this.pos.x += v.x;
     this.pos.y += v.y;
   },
@@ -84,7 +84,7 @@ Ut.Circle = Ut.Class.extend({
    * @param {!hlf.util.Vector|Object} v Modifying set of components,
    *      typically a vector.
    */
-  shiftAgainst: function (v) {
+  shiftAgainst: function(v){
     this.pos.x -= v.x;
     this.pos.y -= v.y;
   },
@@ -94,14 +94,14 @@ Ut.Circle = Ut.Class.extend({
    * @param {!hlf.util.ViewModel} vm View model with the required accessors.
    * @deprecated until I refine this.
    */
-  updateToView: function (vm) {
+  updateToView: function(vm){
     this.pos.x = Math.min(vm.getBX(this.rad), this.pos.x);
     this.pos.y = Math.min(vm.getBY(this.rad), this.pos.y);
     this.pos.x = Math.max(0, this.pos.x);
     this.pos.y = Math.max(0, this.pos.y);
   },
   /** @ignore */
-  toString: function () {
+  toString: function(){
     return hlfPkg + 'util.Circle';
   }
 });
@@ -142,7 +142,7 @@ Mod.CirclePacker = Ut.Class.extend(Ut.extend({
    *      manager by having its circles map to the nodes.
    * @param {Array} arguments
    */
-  _init: function () {
+  _init: function(){
     if (arguments.length > 1) {
       this.circles = arguments[0];
       this.origin = arguments[1];
@@ -184,21 +184,20 @@ Mod.CirclePacker = Ut.Class.extend(Ut.extend({
    *      from locking up.
    * @param {?int=} pass Starting pass.
    */
-  run: function (pass) {
-    var _this = this;
+  run: function(pass){
     this.pass = pass ? pass : 0;
     this.damping = (pass ? Math.pow(0.98, pass) : 1) * 0.1; // TODO - refactor into const
     if (this.runner) {
       clearInterval(this.runner);
     }
-    this.runner = setInterval(function () {
-      _this.trigger('drawingSocket');
-      _this._iterator(_this.pass += 1);
-      if (_this.damping < 0.007) {
-        clearInterval(_this.runner);
-        _this.trigger('didSettle');
+    this.runner = setInterval(_.bind(function(){
+      this.trigger('drawingSocket');
+      this._iterator(this.pass += 1);
+      if (this.damping < 0.007) {
+        clearInterval(this.runner);
+        this.trigger('didSettle');
       }
-    }, 30);
+    }, this), 30);
     this.trigger('willSettle');
   },
   /** 
@@ -206,13 +205,12 @@ Mod.CirclePacker = Ut.Class.extend(Ut.extend({
    * @param {?int=} pass Current.
    * @todo Fix porting hack for Function.bind
    */
-  _iterator: function (pass) {
+  _iterator: function(pass){
     var ci, cj, dx, dy, d, r, i, j,
-        v = new Ut.Vector(),
-        _this = this;
-    this.circles.sort(function (c1, c2) {
-      return _this._compare(c1, c2);
-    });
+        v = new Ut.Vector();
+    this.circles.sort(_.bind(function(c1, c2){
+      return this._compare(c1, c2);
+    }, this));
     for (i = 0, l = this.circles.length; i < l; i += 1) {
       ci = this.circles[i];
       for (j = i + 1; j < l; j += 1) {
@@ -241,7 +239,7 @@ Mod.CirclePacker = Ut.Class.extend(Ut.extend({
    * Tweaks the circle's position based on the current damping value.
    * @param {!number} damping Current.
    */
-  _contract: function (damping) {
+  _contract: function(damping){
     if (damping < 0.01) {
       return;
     }
@@ -259,7 +257,7 @@ Mod.CirclePacker = Ut.Class.extend(Ut.extend({
    * @param {!hlf.util.Circle} c2 Circle for reference.
    * @return {boolean}
    */
-  _compare: function (c1, c2) {
+  _compare: function(c1, c2){
     var dist1 = this._distanceTo(c1.pos, this.origin);
     var dist2 = this._distanceTo(c2.pos, this.origin);
     if (dist1 < dist2) {
@@ -281,7 +279,7 @@ Mod.CirclePacker = Ut.Class.extend(Ut.extend({
     return Ut.dist(dx, dy);
   },
   /** @ignore */
-  toString: function () {
+  toString: function(){
     return hlfPkg + '.module.CirclePacker';
   }
 }, Mod.EventMixin));

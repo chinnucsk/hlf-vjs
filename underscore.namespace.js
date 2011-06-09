@@ -10,7 +10,7 @@
    * @param {?Object=} classes An object which properties will be added to the namespace.
    * @return {Object} The most inner object
    */
-  _.namespace = function (identifier) {
+  _.namespace = function(identifier){
     var classes = arguments[1] || false;
     var ns = window;
     if (identifier !== '') {
@@ -42,7 +42,7 @@
    * @param {string} identifier The namespace string.
    * @param {?function=} callback A function to call when the process is completed
    */
-  _.using = function (identifier) {
+  _.using = function(identifier){
     var identifiers = identifier.pop ? identifier : [identifier];
     var callback = arguments[1] || false;
     var event = { 'identifier': identifier };

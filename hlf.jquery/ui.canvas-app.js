@@ -1,4 +1,4 @@
-(function ($) {
+(function($){
 /**@exports $ as jQuery */
 /**
  * Plugin to create custom ui-related bindings for a toolbar control. Uses the 
@@ -11,7 +11,7 @@
  * $toolbar = jQuery('#the-toolbar').toolbar(); // get the lazy-constructed API
  * $toolbar.hideButton($('#some-button', $toolbar)); // hide the button
  */
-$.fn.toolbar = function (options) {    
+$.fn.toolbar = function(options){    
   var api = this.data(hlfPkg + '.jquery.toolbar');
   if (api) {
     return api;
@@ -19,14 +19,14 @@ $.fn.toolbar = function (options) {
   var opt = $.extend(true, {}, $.fn.toolbar.defaults, options);
   var sel = opt.selectors;
   // temporary
-  $('button[data-href]', this).bind('click', function (evt) {
+  $('button[data-href]', this).bind('click', function(evt){
     var $linkButton = $(this);
     evt.preventDefault();
     window.open($linkButton.attr('data-href'));
   });
   api = {
     /** @methodOf jQuery.fn.toolbar */ 
-    hideButton: function ($button) {
+    hideButton: function($button){
       $button.add($button.closest(sel.btnWrap).next(sel.btnSeparator))
         .hide();
     }

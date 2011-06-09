@@ -12,7 +12,7 @@ var Ut = hlf.util;
  * @param {!number} num Frames per second.
  * @return {number} Millis for each frame.
  */
-Ut.millisPerFrame = function (num) {
+Ut.millisPerFrame = function(num){
   return parseInt(1000 / num, 10);
 };
 //---------------------------------------
@@ -24,7 +24,7 @@ Ut.millisPerFrame = function (num) {
  * @param {!number} b
  * @return {number} c
  */
-Ut.dist = function (a, b) {
+Ut.dist = function(a, b){
   return Math.sqrt((a * a) + (b * b));
 };
 /**
@@ -34,7 +34,7 @@ Ut.dist = function (a, b) {
  * @param {!number} max
  * @return {number}
  */
-Ut.constrain = function (num, min, max) {
+Ut.constrain = function(num, min, max){
   return Math.min(Math.max(num, min), max);
 };
 /**
@@ -43,7 +43,7 @@ Ut.constrain = function (num, min, max) {
  * @param {number=} from
  * @return {number}
  */
-Ut.simpleRandom = function (to, from) {
+Ut.simpleRandom = function(to, from){
   from = (from !== undefined) ? from : 0;
   return (to - from) * Math.random() + from;
 };
@@ -51,7 +51,7 @@ Ut.simpleRandom = function (to, from) {
  * Returns either -1 or 1.
  * @return {number} 
  */
-Ut.simpleDirection = function () {
+Ut.simpleDirection = function(){
   return Math.random() < 0.5 ? -1 : 1;
 };
 /** 
@@ -62,7 +62,7 @@ Ut.simpleDirection = function () {
  * @return {number}
  * @example util.bufferedRandom(100) // more likely to return 50+
  */
-Ut.bufferedRandom = function (num, buffer) {
+Ut.bufferedRandom = function(num, buffer){
   buffer = (buffer !== undefined) ? buffer : 1;
   return num / (buffer + 1) * (Math.random() + buffer);
 };
@@ -74,7 +74,7 @@ Ut.bufferedRandom = function (num, buffer) {
  * @return {number}
  * @see {hlf.util.bufferedRandom}
  */
-Ut.curvingBufferedRandom = function (num, buffer, pow) {
+Ut.curvingBufferedRandom = function(num, buffer, pow){
   buffer = (buffer !== undefined) ? buffer : 1;
   pow = (pow !== undefined) ? pow : 2;
   return num / (buffer + 1) * (Math.pow(Math.random(), pow) + buffer);
@@ -90,7 +90,7 @@ Ut.curvingBufferedRandom = function (num, buffer, pow) {
  * @param {!int} d Duration, in millis.
  * @return {number} Size of current step.
  */
-Ut.easeInOutCubic = function (t, b, c, d) {
+Ut.easeInOutCubic = function(t, b, c, d){
   if ((t /= d / 2) < 1) {
     return c / 2 * t * t * t + b;
   }

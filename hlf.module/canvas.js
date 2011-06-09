@@ -45,7 +45,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * Gets the element by id and sets the dimension properties via existing 
    *      CSS properties.
    */
-  _init: function (id, type) {
+  _init: function(id, type){
     this.canvas = document.getElementById(id);
     if (!this.canvas.getAttribute('width')) {
       this.canvas.setAttribute('width', this.canvas.clientWidth);
@@ -63,23 +63,23 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
   // ACCESSORS
   //---------------------------------------
   /** Accessor. */
-  getWidth: function () {
+  getWidth: function(){
     return this.canvas.width;
   },
   /** Accessor. */
-  getHeight: function () {
+  getHeight: function(){
     return this.canvas.height;
   },
   /** Plotter position accessor. */
-  getX: function () {
+  getX: function(){
     return this._plotter.pos.x;
   },
   /** Plotter position accessor. */
-  getY: function () {
+  getY: function(){
     return this._plotter.pos.y;
   },
   /** For arcs, converts counterclockwise to -1. */
-  getAngDir: function () {
+  getAngDir: function(){
     return this.anticlockwise ? -1 : 1;
   },
   //---------------------------------------
@@ -92,7 +92,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * @param {?boolean=} isShift Increment from current offset.
    * @return {hlf.module.Canvas} Chains.
    */
-  movePlotter: function (x, y, isShift) {
+  movePlotter: function(x, y, isShift){
     isShift = isShift || false;
     this._plotter.pos = isShift ? 
       {'x': this._plotter.pos.x + x, 'y': this._plotter.pos.y + y} :
@@ -102,7 +102,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
     }
     return this;
   },
-  shiftPlotter: function (x, y) {
+  shiftPlotter: function(x, y){
     return this.movePlotter(x, y, true);
   },
   /** 
@@ -112,7 +112,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    *      cb Step callback.
    * @return {hlf.module.Canvas} Chains.
    */
-  sequence: function (opt, cb) {
+  sequence: function(opt, cb){
     var plotter = this._plotter,
         context = this.context;
     opt = opt || {'x': 10, 'y': 10, 'num': 10};
@@ -130,7 +130,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * @param {?boolean=} noFill Defaults to false.
    * @param {?boolean=} noStroke Defaults to false.
    */
-  circle: function (rad, noFill, noStroke) {
+  circle: function(rad, noFill, noStroke){
     var plotter = this._plotter,
         context = this.context;
     context.beginPath();
@@ -149,7 +149,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * @param {!number} x2
    * @param {!number} y2
    */
-  line: function (x1, y1, x2, y2) {
+  line: function(x1, y1, x2, y2){
     var context = this.context;
     context.beginPath();
     context.lineTo(x1, y1);
@@ -162,7 +162,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * @param {!Object number} pos1
    * @param {!Object number} pos2
    */
-  connect: function (pos1, pos2) {
+  connect: function(pos1, pos2){
     this.line(pos1.x, pos1.y, pos2.x, pos2.y);
   },
   /**
@@ -174,21 +174,21 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * @param {!number} end
    * @param {!number} offset Hack for rotation.
    */
-  arc: function (x, y, r, start, end, offset) {
+  arc: function(x, y, r, start, end, offset){
     offset = offset || 0;
     this.context.arc(x, y, r, start + offset, end + offset, this.anticlockwise);
   },
   /**
    * Save overall context and state, wraps native API.
    */
-  save: function () {
+  save: function(){
     this._plotters.push(this._plotter);
     this.context.save();
   },
   /**
    * Restore overall context and state, wraps native API.
    */
-  restore: function () {
+  restore: function(){
     this._plotter = this._plotters.pop();
     this.context.restore();
   },
@@ -203,7 +203,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * @param {?int=} idx Id of animation and timer. Always should be same.
    * @return {number} The id.
    */
-  animate: function (opt, cb, duration, idx) {
+  animate: function(opt, cb, duration, idx){
     opt = opt || {'fps': 24};
     var anim = {'opt': opt, 'cb': cb};
     if (duration) {
@@ -222,8 +222,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * @param {?int=} duration Default is infinite.
    * @requires hlf.util.millisPerFrame
    */
-  _startAnimation: function (anim, idx) {
-    var _this = this;
+  _startAnimation: function(anim, idx){
     idx = idx || this._animationTimers.length;
     if (this._animationTimers[idx]) { // reset
       clearInterval(this._animationTimers[idx]);
@@ -232,21 +231,21 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
       var start = this.millis(), 
           elapsed = 0,
           complete = false;
-      this._animationTimers[idx] = setInterval(function () {
-        elapsed = _this.millis() - start;
+      this._animationTimers[idx] = setInterval(_.bind(function(){
+        elapsed = this.millis() - start;
         if (elapsed >= anim.duration) {
           complete = true;
         } else {
-          _this.clear();
+          this.clear();
           // console.log('frame');
         }
         anim.cb(elapsed, complete);
-      }, Ut.millisPerFrame(anim.opt.fps));  
+      }, this), Ut.millisPerFrame(anim.opt.fps));  
     } else {
-      this._animationTimers[idx] = setInterval(function () {
-        _this.clear();
+      this._animationTimers[idx] = setInterval(_.bind(function(){
+        this.clear();
         anim.cb();
-      }, Ut.millisPerFrame(anim.opt.fps));  
+      }, this), Ut.millisPerFrame(anim.opt.fps));  
     }
     this.animationState = AnimationState.PLAYING;
   },
@@ -254,7 +253,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * Clears the timer and sets state to paused.
    * @param {!number} idx Id of timer.
    */
-  _stopAnimation: function (idx) {
+  _stopAnimation: function(idx){
     clearInterval(this._animationTimers[idx]);
     this.animationState = AnimationState.PAUSED;
   },
@@ -263,7 +262,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * @param {!number} idx Id of animation and timer.
    * @todo Return to original frame.
    */
-  _deleteAnimation: function (idx) {
+  _deleteAnimation: function(idx){
     this._stopAnimation(idx);
     this._animationTimers.splice(idx, 1);
     this._animations.splice(idx, 1);
@@ -272,7 +271,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
   /**
    * Temporary, for now.
    */
-  clearAnimations: function () {
+  clearAnimations: function(){
     for (var i = 0, l = this._animationTimers.length; i < l; i += 1) {
       clearInterval(this._animationTimers[i]);
     }
@@ -284,7 +283,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * @param {!hlf.module.Canvas.AnimationState} key 
    * @param {?number=} idx Id of animation and timer.
    */
-  changeAnimationStateTo: function (key, idx) {
+  changeAnimationStateTo: function(key, idx){
     if (!AnimationState[key]) {
       return;
     }
@@ -305,7 +304,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * Play command. Animation API.
    * @param {?number=} idx Id of animation and timer.
    */
-  playAnimation: function (idx) {
+  playAnimation: function(idx){
     idx = idx || this._animations.length - 1;
     this.changeAnimationStateTo('PLAYING', idx);
   },
@@ -313,7 +312,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * Pause command. Animation API.
    * @param {?number=} idx Id of animation and timer.
    */
-  pauseAnimation: function (idx) {
+  pauseAnimation: function(idx){
     idx = idx || this._animations.length - 1;
     this.changeAnimationStateTo('PAUSED', idx);
   },
@@ -321,7 +320,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * Smart play command. Animation API.
    * @param {?number=} idx Id of animation and timer.
    */
-  togglePauseAndPlay: function (idx) {
+  togglePauseAndPlay: function(idx){
     if (this.animationState === AnimationState.PLAYING) {
       this.changeAnimationStateTo('PAUSED', idx);
     } else {
@@ -332,7 +331,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * Draws a fade over the screen. For blanking use {@link #clear}.
    * @param {string} color 
    */
-  background: function (color) {
+  background: function(color){
     this.context.save();
     this.context.fillStyle = color;
     this.context.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -341,14 +340,14 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
   /**
    * Simple clearing rectangle over everything.
    */
-  clear: function () {
+  clear: function(){
     this.context.clearRect(0, 0, this.getWidth(), this.getHeight());
   },
   /**
    * Simple way to get current time signature.
    * @return {int}
    */
-  millis: function () {
+  millis: function(){
     return new Date().getTime();
   },
   // ----------------------------------------
@@ -358,11 +357,11 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * Saved as png by default, and is lossless. Opens a new window / tab
    *      with the url being the resulting 'dataURL' of the image.
    */
-  exportAsImage: function () {
+  exportAsImage: function(){
     window.open(this.canvas.toDataURL('image/png'));
   },
   /** @ignore */
-  toString: function () {
+  toString: function(){
     return hlfPkg + 'module.Canvas';
   }
 }, Mod.EventMixin));
@@ -384,25 +383,22 @@ var AnimationState = Mod.Canvas.AnimationState = {
 Ut.CanvasEventMixin = {
   /** @lends Ut.CanvasEventMixin# */
   /** Sets up responsiveness for mouse events. */
-  bindMouse: function () {
-    var _this = this;
-    this.$canvas.bind({
-      mousemove: function (evt) { _this.onMouseMove(evt); evt.stopPropagation(); },
-      mousedown: function (evt) { _this.onMouseDown(evt); evt.stopPropagation(); },
-      mouseup: function (evt) { _this.onMouseUp(evt); evt.stopPropagation(); },
-      mouseenter: function (evt) { _this.onMouseEnter(evt); evt.stopPropagation(); },
-      mouseleave: function (evt) { _this.onMouseLeave(evt); evt.stopPropagation(); }
-    });
+  bindMouse: function(){
+    this.$canvas.bind('mousemove mousedown mouseup mouseenter mouseleave',
+      _.bind(function(evt){
+        this['onMouse'+evt.type.substr(5,1).toUpperCase()+evt.type.substr(6)](evt); 
+        evt.stopPropagation();
+      }, this));
   },
   /**#@+
      Event handler.
      @param {MouseEvent} evt
   */
-  onMouseMove: function (evt) {},
-  onMouseDown: function (evt) {},
-  onMouseUp: function (evt) {},
-  onMouseEnter: function (evt) {},
-  onMouseLeave: function (evt) {}
+  onMouseMove: function(evt){},
+  onMouseDown: function(evt){},
+  onMouseUp: function(evt){},
+  onMouseEnter: function(evt){},
+  onMouseLeave: function(evt){}
   /**#@-*/
 };
 /**
@@ -440,7 +436,7 @@ Mod.CanvasApplication = Ut.Class.extend(Ut.extend({
   },
   teardown: function(){},
   start: function(){},
-  stop: function(){},
+  stop: function(){}
 }, Mod.EventMixin));
 // ----------------------------------------
 // OUTRO

@@ -23,7 +23,7 @@ Ut.Vector = Ut.Class.extend({
   x: undefined,
   y: undefined,
   mag: undefined,
-  _init: function (x, y) {
+  _init: function(x, y){
     this.x = x || 0;
     this.y = y || 0;
     this.getMagnitude();
@@ -33,7 +33,7 @@ Ut.Vector = Ut.Class.extend({
    * @param {?boolean=} fresh Update protected property.
    * @return {number}
    */
-  getMagnitude: function (fresh) {
+  getMagnitude: function(fresh){
     if (!this.mag || fresh) {
       this.mag = Ut.dist(this.x, this.y);
     }
@@ -44,7 +44,7 @@ Ut.Vector = Ut.Class.extend({
    * @param {!hlf.util.Vector|number} v Target vector or scalar.
    * @param {number} dir Direction: 1 or -1.
    */
-  add: function (v, dir) {
+  add: function(v, dir){
     dir = (dir !== undefined) ? dir : 1;
     var isVector = v.hasOwnProperty('x');
     this.x += dir * (isVector ? v.x : v);
@@ -55,7 +55,7 @@ Ut.Vector = Ut.Class.extend({
    * @param {!hlf.util.Vector|number} v Target vector or scalar.
    * @param {?number=} dir Direction: 1 or -1.
    */
-  mult: function (v, dir) {
+  mult: function(v, dir){
     v = v || 1;
     dir = (dir !== undefined) ? dir : 1;
     var isVector = v.hasOwnProperty('x');
@@ -65,11 +65,11 @@ Ut.Vector = Ut.Class.extend({
   /**
    * Multiply itself with the inverse of the magnitude.
    */
-  normalize: function () {
+  normalize: function(){
     this.mult(1 / this.getMagnitude(true));
   },
   /** @ignore */
-  toString: function () {
+  toString: function(){
     return hlfPkg + 'util.Vector';
   }
 }); 
