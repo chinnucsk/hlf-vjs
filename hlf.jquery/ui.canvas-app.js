@@ -11,20 +11,16 @@
  * $toolbar = jQuery('#the-toolbar').toolbar(); // get the lazy-constructed API
  * $toolbar.hideButton($('#some-button', $toolbar)); // hide the button
  */
-$.fn.toolbar = function(options){    
+$.fn.hlfToolbar = function(options){    
   var api = this.data(hlfPkg + '.jquery.toolbar');
   if (api) {
     return api;
   }
-  var opt = $.extend(true, {}, $.fn.toolbar.defaults, options);
+  var opt = $.extend(true, {}, $.fn.hlfToolbar.defaults, options);
   var sel = opt.selectors;
   // temporary
-  $('button[data-href]', this).bind('click', function(evt){
-    var $linkButton = $(this);
-    evt.preventDefault();
-    window.open($linkButton.attr('data-href'));
-  });
   api = {
+    $buttons: this.find(sel.btn).hlfButton(),
     /** @methodOf jQuery.fn.toolbar */ 
     hideButton: function($button){
       $button.add($button.closest(sel.btnWrap).next(sel.btnSeparator))
@@ -35,14 +31,43 @@ $.fn.toolbar = function(options){
   $.extend(this, api);
   return this;
 };
+/**
+ * TODO doc
+ */
+$.fn.hlfButton = function(options){
+  var opt = $.extend(true, {}, $.fn.hlfButton.defaults, options);
+  if (this.length > 1) {
+    this.each(function(){ $(this).hlfButton(); });
+    return;
+  }
+  // link button
+  this.filter('[data-href]').bind('click', $.proxy(function(evt){
+    evt.preventDefault();
+    window.open(this.attr('data-href'));
+  }, this));
+  // toggle button
+  // TODO - long hold
+  this.filter('.toggle').bind('click', $.proxy(function(evt){
+    evt.preventDefault();
+    if (!this.is('.on, .off')) {
+      this.addClass('on');
+    } else {
+      this.toggleClass('on off');
+    }
+    this.trigger((this.is('.on') ? 'on' : 'off')+'.'+this.attr('id'))
+  }, this));
+  return this;
+};
 /** 
  * Properties:
  *      <br/>selectors: btnWrap, btnSeparator
  * @static
  */
-$.fn.toolbar.defaults = {};
-$.fn.toolbar.defaults.selectors = {
+$.fn.hlfToolbar.defaults = {};
+$.fn.hlfToolbar.defaults.selectors = {
   btnWrap: '.btn-wrap',
-  btnSeparator: '.separator'
+  btnSeparator: '.separator',
+  btn: '.btn'
 };
+$.fn.hlfButton.defaults = {};
 })(jQuery);

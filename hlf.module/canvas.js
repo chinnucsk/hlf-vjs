@@ -402,7 +402,8 @@ Ut.CanvasEventMixin = {
   /**#@-*/
 };
 /**
- * TODO
+ * TODO doc
+ * Also known as sketch
  */
 Mod.CanvasApplication = Ut.Class.extend(Ut.extend({
   /**
@@ -432,7 +433,7 @@ Mod.CanvasApplication = Ut.Class.extend(Ut.extend({
         $elem.text(($elem.text() === 'stop') ? 'play' : 'stop');
         evt.preventDefault();
       }, this));
-    this.$toolbar = $('#the-canvas-toolbar').toolbar();
+    this.$toolbar = $('#the-canvas-toolbar').hlfToolbar();
   },
   teardown: function(){},
   start: function(){},
