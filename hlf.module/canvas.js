@@ -82,6 +82,13 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
   getAngDir: function(){
     return this.anticlockwise ? -1 : 1;
   },
+  /** Accessor. */
+  getCenter: function(){
+    return {
+      x: this.getWidth()/2,
+      y: this.getHeight()/2
+    };
+  },
   //---------------------------------------
   // PLOTTING
   //---------------------------------------
