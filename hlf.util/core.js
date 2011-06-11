@@ -16,6 +16,20 @@ Ut.toInt = function(num){
   return parseInt(num, 10);
 };
 /**
+ * TODO doc
+ */
+Ut.titleCase = function(name){
+  return name.replace(/^\w/, function(firstLetter){
+    return firstLetter.toUpperCase();
+  });
+};
+/**
+ * TODO doc
+ */
+Ut.constantCase = function(name){
+  return name.replace('-', '_').toUpperCase();
+};
+/**
  * Useful for key conversion.
  * @param {string} num
  * @return {string}
@@ -24,8 +38,8 @@ Ut.camelCase = function(name){
   if (arguments.length > 0) {
     name = arguments.join('-');
   } 
-  return name.replace(/([-_][a-z])/g, function($1){
-    return $1.toUpperCase().replace(/[-_]/, '');
+  return name.replace(/([-_][a-z])/g, function(segment){
+    return segment.toUpperCase().replace(/[-_]/, '');
   });
 };
 /**

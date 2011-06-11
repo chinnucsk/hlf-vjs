@@ -82,13 +82,6 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
   getAngDir: function(){
     return this.anticlockwise ? -1 : 1;
   },
-  /** Accessor. */
-  getCenter: function(){
-    return {
-      x: this.getWidth()/2,
-      y: this.getHeight()/2
-    };
-  },
   //---------------------------------------
   // PLOTTING
   //---------------------------------------
@@ -444,7 +437,19 @@ Mod.CanvasApplication = Ut.Class.extend(Ut.extend({
   },
   teardown: function(){},
   start: function(){},
-  stop: function(){}
+  stop: function(){},
+  manager: function(){},
+  _toggleControlHandler: function(evt, type){
+    type = type.split('-');
+    var handlerName = (evt.type === 'on') ? 'start' : 'stop',
+        mainType = type.pop(),
+        subType = type.join('-'),
+        typeConstant = this.constants()[Ut.constantCase(mainType)][Ut.constantCase(subType)];
+    handlerName += Ut.titleCase(mainType);
+    if (handlerName in this.manager()) {
+      this.manager()[handlerName](typeConstant);
+    }
+  }
 }, Mod.EventMixin));
 // ----------------------------------------
 // OUTRO

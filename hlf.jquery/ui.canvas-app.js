@@ -54,7 +54,7 @@ $.fn.hlfButton = function(options){
     } else {
       this.toggleClass('on off');
     }
-    this.trigger((this.is('.on') ? 'on' : 'off')+'.'+this.attr('id'))
+    this.trigger((this.is('.on') ? 'on' : 'off'), [this.attr('id')]);
   }, this));
   return this;
 };
