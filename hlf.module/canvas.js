@@ -8,6 +8,20 @@ _.namespace(hlfPkg + '.module');
 (function(hlf){
 var Ut = hlf.util, Mod = hlf.module;
 /**
+ * TODO doc
+ */
+Ut.CanvasStyleMixin = {
+  palette: {},
+  backgroundColor: undefined,
+  foregroundColor: undefined,
+  _augmentStyle: function(){
+    Ut.extend(this.palette, {
+      black: new Ut.Color(0,0,0),
+      white: new Ut.Color(255,255,255)
+    });
+  }
+};
+/**
  * @class A custom wrapper class for the HTMLCanvasElement and its API. Its
  *      purpose is to simplify common tasks and provide an object-oriented API
  *      for the otherwise declarative canvas API, and to add a more robust 
@@ -58,6 +72,9 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
     this._animationTimers = [];
     this.animationState = AnimationState.STOPPED;
     this.anticlockwise = true;
+    if (this._augmentStyle) {
+      this._augmentStyle();
+    }
   },
   //---------------------------------------
   // ACCESSORS
@@ -329,9 +346,10 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
   },
   /**
    * Draws a fade over the screen. For blanking use {@link #clear}.
-   * @param {string} color 
+   * @param {hlf.util.Color} color 
    */
   background: function(color){
+    color = color || this.backgroundColor;
     this.context.save();
     this.context.fillStyle = color;
     this.context.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -364,7 +382,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
   toString: function(){
     return hlfPkg + 'module.Canvas';
   }
-}, Mod.EventMixin));
+}, Mod.EventMixin, Ut.CanvasStyleMixin));
 /**
  * Enum: PLAYING, PAUSED, STATIC.
  * @type {Object int}
@@ -403,6 +421,33 @@ Ut.CanvasEventMixin = {
 };
 /**
  * TODO doc
+ */
+Ut.Color = Ut.Class.extend({
+  red: undefined,
+  blue: undefined,
+  green: undefined,
+  alpha: undefined,
+  _init: function(){
+    if (arguments.length >= 3) {
+      this.red = arguments[0];
+      this.green = arguments[1];
+      this.blue = arguments[2];
+      this.alpha = arguments[3] ? arguments[3] : 1;
+    }
+  },
+  rgbWithAlpha: function(a){
+    var values = [this.red, this.blue, this.green];
+    if (a) {
+      values.push(a);
+    }
+    return values;
+  },
+  stringWithAlpha: function(a){
+    return 'rgb'+(a?'a':'')+'('+this.rgbWithAlpha(a).join(',')+')';
+  }
+});
+/**
+ * TODO doc
  * Also known as sketch
  */
 Mod.CanvasApplication = Ut.Class.extend(Ut.extend({
@@ -436,7 +481,9 @@ Mod.CanvasApplication = Ut.Class.extend(Ut.extend({
     this.$toolbar = $('#the-canvas-toolbar').hlfToolbar();
   },
   teardown: function(){},
-  start: function(){},
+  start: function(){
+    $(document).bind('on off', $.proxy(this._toggleControlHandler, this));
+  },
   stop: function(){},
   manager: function(){},
   _toggleControlHandler: function(evt, type){
