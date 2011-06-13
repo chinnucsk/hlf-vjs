@@ -66,7 +66,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
       this.canvas.setAttribute('height', this.canvas.clientHeight);
     }
     this.context = this.canvas.getContext(type) || this.canvas.getContext('2d');
-    this._plotter = { 'pos': { 'x': 0, 'y': 0 } };
+    this._plotter = { pos: {x: 0, y: 0}};
     this._plotters = [];
     this._animations = [];
     this._animationTimers = [];
@@ -111,9 +111,13 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    */
   movePlotter: function(x, y, isShift){
     isShift = isShift || false;
-    this._plotter.pos = isShift ? 
-      {'x': this._plotter.pos.x + x, 'y': this._plotter.pos.y + y} :
-      {'x': x, 'y': y};
+    this._plotter.pos = isShift ? {
+        x: this._plotter.pos.x + x, 
+        y: this._plotter.pos.y + y
+      } : {
+        x: x, 
+        y: y
+      };
     if (!isShift) {
       this.context.moveTo(x, y);
     }
@@ -132,11 +136,15 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
   sequence: function(opt, cb){
     var plotter = this._plotter,
         context = this.context;
-    opt = opt || {'x': 10, 'y': 10, 'num': 10};
+    opt = opt || {
+      x: 10, 
+      y: 10, 
+      num: 10
+    };
     for (var idx = 0; idx < opt.num; idx += 1) {
       cb({
-        'x': plotter.pos.x + opt.x * idx,
-        'y': plotter.pos.y + opt.y * idx
+        x: plotter.pos.x + opt.x * idx,
+        y: plotter.pos.y + opt.y * idx
       }, context, idx);
     }
     return this;
@@ -221,15 +229,20 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * @return {number} The id.
    */
   animate: function(opt, cb, duration, idx){
-    opt = opt || {'fps': 24};
-    var anim = {'opt': opt, 'cb': cb};
+    opt = opt || {fps: 24};
+    var anim = {
+          opt: opt, 
+          cb: cb
+        };
     if (duration) {
       anim.duration = duration;
     }
     this._startAnimation(anim, idx);
-    if (!idx) {
+    if (!idx || !idx in this._animations) {
       this._animations.push(anim);
       return this._animations.length - 1; 
+    } else {
+      return this._animations[idx];
     }
   },
   /** 
@@ -245,10 +258,15 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
       clearInterval(this._animationTimers[idx]);
     }
     if (anim.duration) {
-      var start = this.millis(), 
-          elapsed = 0,
-          complete = false;
+      var start, elapsed, complete,
+          reset = _.bind(function(){
+            start = this.millis();
+            elapsed = 0;
+            complete = false;
+          }, this);
+      reset();
       this._animationTimers[idx] = setInterval(_.bind(function(){
+        // on each frame
         elapsed = this.millis() - start;
         if (elapsed >= anim.duration) {
           complete = true;
@@ -257,9 +275,15 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
           // console.log('frame');
         }
         anim.cb(elapsed, complete);
+        if (complete && anim.opt.repeat) {
+          this.clear();
+          reset();
+          anim.cb(elapsed, complete);
+        }
       }, this), Ut.millisPerFrame(anim.opt.fps));  
     } else {
       this._animationTimers[idx] = setInterval(_.bind(function(){
+        // on each frame
         this.clear();
         anim.cb();
       }, this), Ut.millisPerFrame(anim.opt.fps));  
@@ -305,7 +329,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
       return;
     }
     var anim = this._animations[idx || this._animations.length - 1];
-    switch (this.animationState[key]) {
+    switch (AnimationState[key]) {
       case AnimationState.PLAYING:
         this._startAnimation(anim, idx);
         break;
