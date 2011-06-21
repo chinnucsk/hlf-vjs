@@ -242,7 +242,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
       this._animations.push(anim);
       return this._animations.length - 1; 
     } else {
-      return this._animations[idx];
+      return idx;
     }
   },
   /** 
@@ -272,7 +272,6 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
           complete = true;
         } else {
           this.clear();
-          // console.log('frame');
         }
         anim.cb(elapsed, complete);
         if (complete && anim.opt.repeat) {
@@ -295,6 +294,12 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * @param {!number} idx Id of timer.
    */
   _stopAnimation: function(idx){
+    if (!this._animationTimers[idx]) {
+      throw {
+        message: 'Stopping animation failed',
+        idx: idx
+      };
+    }
     clearInterval(this._animationTimers[idx]);
     this.animationState = AnimationState.PAUSED;
   },
