@@ -9,9 +9,16 @@ var Ut = hlf.util, Mod = hlf.module;
  *      {@link Backbone.Events}.
  */
 Mod.EventMixin = Backbone.Events;
+/**
+ * TODO doc
+ */
 Mod.EventMixin.bind_ = function(event, callback, context, arguments_){
   context = context || this;
-  this.bind(event, _.bind(callback, context, arguments_));
+  if (typeof arguments_ !== 'undefined') { // curry
+    this.bind(event, _.bind(callback, context, arguments_));
+  } else {
+    this.bind(event, _.bind(callback, context));
+  }
 };
 /** 
  * @name hlf.module.EventMixin#bind 
