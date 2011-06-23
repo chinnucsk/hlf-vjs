@@ -202,6 +202,16 @@ Ut.each = function(object, callback, args){
   }
   return object;
 };
+/**
+ * Copies the object to the prototype of a one-shot constructor.
+ * @param {!Object} object The target.
+ * @return {Object} One-shot constructor instance.
+ */
+Ut.clone = function (object) {
+  var OneShotConstructor = function(){};
+  OneShotConstructor.prototype = object;
+  return new OneShotConstructor();
+};
 // ----------------------------------------
 // OOP
 // ----------------------------------------
