@@ -401,6 +401,15 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
   // MISC
   // ----------------------------------------
   /**
+   * TODO doc
+   */
+  randomLocation: function(){
+    var pos = {};
+    pos.x = Ut.toInt(Ut.simpleRandom(this.getWidth())); 
+    pos.y = Ut.toInt(Ut.simpleRandom(this.getHeight())); 
+    return pos;
+  },
+  /**
    * Saved as png by default, and is lossless. Opens a new window / tab
    *      with the url being the resulting 'dataURL' of the image.
    */
