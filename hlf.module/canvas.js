@@ -52,6 +52,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
   _animationTimers: undefined,
   _animations: undefined,
   anticlockwise: undefined,
+  optimizedClearing: undefined,
   // ----------------------------------------
   // METHODS
   // ----------------------------------------
@@ -72,6 +73,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
     this._animationTimers = [];
     this.animationState = AnimationState.STOPPED;
     this.anticlockwise = true;
+    this.optimizedClearing = false;
     if (this._augmentStyle) {
       this._augmentStyle();
     }
@@ -235,7 +237,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * @param {?int=} idx Id of animation and timer. Always should be same.
    * @return {number} The id.
    */
-  animate: function(opt, cb, duration, idx){
+  animate: function(opt, cb, duration, idx, sprite){
     opt = opt || {fps: 24};
     var anim = {
           opt: opt, 
@@ -244,7 +246,7 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
     if (duration) {
       anim.duration = duration;
     }
-    this._startAnimation(anim, idx);
+    this._startAnimation(anim, idx, sprite);
     if (!idx || !idx in this._animations) {
       this._animations.push(anim);
       return this._animations.length - 1; 
@@ -259,7 +261,8 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
    * @param {?int=} duration Default is infinite.
    * @requires hlf.util.millisPerFrame
    */
-  _startAnimation: function(anim, idx){
+  _startAnimation: function(anim, idx, sprite){
+    // console.log(this._animationTimers);
     idx = idx || this._animationTimers.length;
     if (this._animationTimers[idx]) { // reset
       clearInterval(this._animationTimers[idx]);
@@ -275,15 +278,20 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
       this._animationTimers[idx] = setInterval(_.bind(function(){
         // on each frame
         elapsed = this.millis() - start;
-        if (elapsed >= anim.duration) {
-          complete = true;
+        complete = (elapsed >= anim.duration);
+        if (complete) {
+          console.log(idx, 'complete');
+          anim.cb(elapsed, complete);
+          if (anim.opt.repeat) {
+            console.log(idx, 'repeating');
+            this.clear(sprite);
+            reset();
+            anim.cb(elapsed, complete);
+          } else {
+            this._stopAnimation(idx);
+          }
         } else {
-          this.clear();
-        }
-        anim.cb(elapsed, complete);
-        if (complete && anim.opt.repeat) {
-          this.clear();
-          reset();
+          this.clear(sprite);
           anim.cb(elapsed, complete);
         }
       }, this), Ut.millisPerFrame(anim.opt.fps));  
@@ -394,8 +402,17 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
   /**
    * Simple clearing rectangle over everything.
    */
-  clear: function(){
-    this.context.clearRect(0, 0, this.getWidth(), this.getHeight());
+  clear: function(sprite){
+    if (this.optimizedClearing && sprite) {
+      var w = (sprite.width || sprite.getWidth()) + 4,
+          h = (sprite.height || sprite.getHeight()) + 4,
+          x = sprite.pos.x + -(w / 2),
+          y = sprite.pos.y + -(h / 2);
+      // all sprites are center-positioned
+      this.context.clearRect(x, y, w, h);
+    } else {
+      this.context.clearRect(0, 0, this.getWidth(), this.getHeight());
+    }
   },
   /**
    * Simple way to get current time signature.
