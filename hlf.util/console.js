@@ -19,4 +19,11 @@ console.logAtPos = function(prop, obj){
 console.logArc = function(obj){
   console.log(['arc from',obj.angStart,'to',obj.angEnd].join(' '));
 };
+/**
+ * TODO doc
+ */
+console._log = '';
+console.logRecord = function(){
+  console._log += $.makeArray(arguments).join(' ') + '\n';
+};
 })(_.namespace(hlfPkg));

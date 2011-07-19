@@ -280,10 +280,10 @@ Mod.Canvas = Ut.Class.extend(Ut.extend({
         elapsed = this.millis() - start;
         complete = (elapsed >= anim.duration);
         if (complete) {
-          console.log(idx, 'complete');
+          // console.log(idx, 'complete');
           anim.cb(elapsed, complete);
           if (anim.opt.repeat) {
-            console.log(idx, 'repeating');
+            // console.log(idx, 'repeating');
             this.clear(sprite);
             reset();
             anim.cb(elapsed, complete);
