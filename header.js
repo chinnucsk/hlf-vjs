@@ -22,17 +22,20 @@ var hlfPkg = 'hlf';
 /**
  * Utility methods, mixins, and classes. Categories include console, 
  *      core, geom, math, etc.
- * @name hlf.hlfUtil
+ * @name hlf.util
  * @namespace 
  */
+_.namespace(hlfPkg + '.util');
 /**
- * @name hlf.hlfModule
+ * @name hlf.module
  * @namespace Module classes and mixins.
  */
+_.namespace(hlfPkg + '.module');
 /**
  * @name hlf.jquery
  * @namespace Custom jQuery events and data.
  */
+_.namespace(hlfPkg + '.jquery');
 /**
  * @name Backbone
  * @namespace Tool to control models and provide simple evented objects. 

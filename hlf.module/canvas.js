@@ -4,7 +4,6 @@
  */
 /** @exports Ut as hlf.util */
 /** @exports Mod as hlf.module */
-_.namespace(hlfPkg + '.module');
 (function(hlf){
 var Ut = hlf.util, Mod = hlf.module;
 /**

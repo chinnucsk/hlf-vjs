@@ -2,9 +2,8 @@
 // ----------------------------------------
 // INTRO
 // ----------------------------------------
-_.namespace(hlfPkg + '.util');
 (function(hlf){
-var Ut = hlf.util;
+var Ut = hlf.util, Mod = hlf.module;
 // ----------------------------------------
 // LANGUAGE
 // ----------------------------------------
@@ -223,8 +222,8 @@ Ut.clone = function (object) {
  * The base Class implementation (does nothing)
  * @class
  */
-Ut.Class = function(){};
 // Inspired by base2 and Prototype
+Ut.Class = function(){};
 (function(){
   var initializing = false, 
       fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
@@ -262,8 +261,15 @@ Ut.Class = function(){};
     // The dummy class constructor
     var Class = function(){
       // All construction is actually done in the init method
-      if ( !initializing && this._init )
+      if (!initializing && this._init) {
+        if (this._beforeInit) {
+          this._beforeInit.apply(this, arguments);
+        }
         this._init.apply(this, arguments);
+        if (this._afterInit) {
+          this._afterInit.apply(this, arguments);
+        }
+      }
     };
     // Populate our constructed prototype object
     Class.prototype = prototype;
@@ -274,6 +280,24 @@ Ut.Class = function(){};
     return Class;
   };
 })();
+
+// ----------------------------------------
+// CLASS
+// ----------------------------------------
+/**
+ * TODO doc
+ */
+Mod.Mixable = Ut.Class.extend({
+  _init: function(){
+  },
+  _afterInit: function(){
+    $.each(this, _.bind(function(name, method){
+      if (/^_init\w+Mixin$/.test(name)) {
+        method.call(this);
+      }
+    }, this));
+  }
+});
 // ----------------------------------------
 // OUTRO
 // ----------------------------------------

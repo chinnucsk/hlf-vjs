@@ -6,7 +6,6 @@
 // INTRO
 // ----------------------------------------
 /** @exports Ut as hlf.util */
-_.namespace(hlfPkg + '.module');
 (function(hlf){
 var Ut = hlf.util, Mod = hlf.module;
 /**

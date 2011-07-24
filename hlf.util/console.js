@@ -1,4 +1,3 @@
-_.namespace(hlfPkg + '.util');
 (function(hlf){
 var Ut = hlf.util;
 /**
