@@ -37,6 +37,11 @@ _.namespace(hlfPkg + '.module');
  */
 _.namespace(hlfPkg + '.jquery');
 /**
+ * @name Raphael.fn.hlf
+ * @namespace Custom Raphael extensions.
+ */
+Raphael.fn.hlf = {};
+/**
  * @name Backbone
  * @namespace Tool to control models and provide simple evented objects. 
  *      <a href="http://documentcloud.github.com/backbone/">github</a>
