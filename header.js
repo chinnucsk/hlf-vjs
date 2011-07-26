@@ -37,6 +37,11 @@ _.namespace(hlfPkg + '.module');
  */
 _.namespace(hlfPkg + '.jquery');
 /**
+ * @name hlf.raphael
+ * @namespace Custom Raphael settings and sequences.
+ */
+_.namespace(hlfPkg + '.raphael');
+/**
  * @name Raphael.fn.hlf
  * @namespace Custom Raphael extensions.
  */
