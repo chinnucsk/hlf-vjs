@@ -31,11 +31,19 @@ _.namespace(hlfPkg + '.util');
  * @namespace Module classes and mixins.
  */
 _.namespace(hlfPkg + '.module');
+
+if (window.jQuery) {
+
 /**
  * @name hlf.jquery
  * @namespace Custom jQuery events and data.
  */
 _.namespace(hlfPkg + '.jquery');
+
+}
+
+if (window.Raphael) {
+
 /**
  * @name hlf.raphael
  * @namespace Custom Raphael settings and sequences.
@@ -46,6 +54,9 @@ _.namespace(hlfPkg + '.raphael');
  * @namespace Custom Raphael extensions.
  */
 Raphael.fn.hlf = {};
+
+}
+
 /**
  * @name Backbone
  * @namespace Tool to control models and provide simple evented objects. 
